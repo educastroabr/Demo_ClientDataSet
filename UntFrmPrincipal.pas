@@ -30,9 +30,9 @@ type
     procedure BitBtn1Click(Sender: TObject);
     procedure DataGetText(Sender: TField; var Text: string; DisplayText: Boolean);
   private
-    { Private declarations }
+
   public
-    { Public declarations }
+    destructor Destroy; override;
   end;
 
 var
@@ -53,7 +53,8 @@ var
 begin
   try
     ClientDataSet1.Close;
-    //(*
+    for nIndex := ClientDataSet1.Fields.Count - 1 downto 0 do
+      ClientDataSet1.Fields[nIndex].Free;
     FDQuery1.SQL.Clear;
     FDQuery1.SQL.Add(cSQL);
     FDQuery1.SQL.Add(' AND 1 = 2 ');
@@ -216,6 +217,15 @@ begin
     Text := EmptyStr
   else
     Text := Sender.AsString;
+end;
+
+destructor TFrmPrincipal.Destroy;
+var
+  nIndex: Integer;
+begin
+  for nIndex := ClientDataSet1.Fields.Count - 1 downto 0 do
+    ClientDataSet1.Fields[nIndex].Free;
+  inherited;
 end;
 
 end.
